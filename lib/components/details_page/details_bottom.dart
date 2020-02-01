@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_shop/provide/cart.dart';
 import 'package:flutter_shop/provide/currentIndex.dart';
 import 'package:provider/provider.dart';
 import '../../provide/details_info.dart';
@@ -9,6 +10,7 @@ class DetailsBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     var goodsInfo =
         Provider.of<DetailsInfoProvide>(context).goodsInfo.data.goodInfo;
+    int goodsCount = Provider.of<CartProvide>(context).allGoodsCount;
 
     var goodsID = goodsInfo.goodsId;
     var goodsName = goodsInfo.goodsName;
@@ -49,42 +51,34 @@ class DetailsBottom extends StatelessWidget {
                       border: Border.all(width: 2, color: Colors.white),
                       borderRadius: BorderRadius.circular(12.0)),
                   child: Text(
-                    '1',
+                    '${goodsCount}',
+                    style: TextStyle(
+                        color: Colors.white, fontSize: ScreenUtil().setSp(22)),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 10,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(6, 3, 6, 3),
+                  decoration: BoxDecoration(
+                      color: Colors.pink,
+                      border: Border.all(width: 2, color: Colors.white),
+                      borderRadius: BorderRadius.circular(12.0)),
+                  child: Text(
+                    '${goodsCount}',
                     style: TextStyle(
                         color: Colors.white, fontSize: ScreenUtil().setSp(22)),
                   ),
                 ),
               )
-              // Provide<CartProvide>(
-              //   builder: (context,child,val){
-              //     int  goodsCount = Provide.value<CartProvide>(context).allGoodsCount;
-              //     return  Positioned(
-              //         top:0,
-              //         right: 10,
-              //         child: Container(
-              //           padding:EdgeInsets.fromLTRB(6, 3, 6, 3),
-              //           decoration: BoxDecoration(
-              //             color:Colors.pink,
-              //             border:Border.all(width: 2,color: Colors.white),
-              //             borderRadius: BorderRadius.circular(12.0)
-              //           ),
-              //           child: Text(
-              //             '${goodsCount}',
-              //             style: TextStyle(
-              //               color: Colors.white,
-              //               fontSize: ScreenUtil().setSp(22)
-              //             ),
-              //           ),
-              //         ),
-              //       ) ;
-              //   },
-              // )
             ],
           ),
           InkWell(
             onTap: () async {
-              // await Provide.value<CartProvide>(context)
-              //     .save(goodsID, goodsName, count, price, images);
+              await Provider.of<CartProvide>(context)
+                  .save(goodsID, goodsName, count, price, images);
             },
             child: Container(
               alignment: Alignment.center,
@@ -100,7 +94,7 @@ class DetailsBottom extends StatelessWidget {
           ),
           InkWell(
             onTap: () async {
-              // await Provide.value<CartProvide>(context).remove();
+              await Provider.of<CartProvide>(context).remove();
             },
             child: Container(
               alignment: Alignment.center,

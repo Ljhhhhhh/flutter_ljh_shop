@@ -1,66 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_shop/components/cart_page/cart_bottom.dart';
+import 'package:flutter_shop/components/cart_page/cart_item.dart';
+import 'package:flutter_shop/provide/cart.dart';
+import 'package:provider/provider.dart';
 
-class CartPage extends StatefulWidget {
-  @override
-  _CartPageState createState() => _CartPageState();
-}
-
-class _CartPageState extends State<CartPage> {
-  List<String> testList = [];
+class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _show();
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 500,
-            child: ListView.builder(
-              itemCount: testList.length,
-              itemBuilder: (BuildContext context, index) {
-                return ListTile(
-                  title: Text(testList[index]),
-                );
-              },
-            ),
-          ),
-          RaisedButton(
-            onPressed: _add,
-            child: Text('+'),
-          ),
-          RaisedButton(
-            onPressed: _clear,
-            child: Text('X'),
-          ),
-        ],
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(title: Text('购物车')),
+        body: FutureBuilder(
+          future: _getCartInfo(context),
+          builder: (context, snapshot) {
+            List cartList = Provider.of<CartProvide>(context).cartList;
+            if (snapshot.hasData) {
+              return Stack(
+                children: <Widget>[
+                  ListView.builder(
+                    itemCount: cartList.length,
+                    itemBuilder: (context, index) {
+                      return CartItem(cartList[index]);
+                    },
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: CartBottom()
+                  )
+                ],
+              );
+            } else {
+              return Text('加载中……');
+            }
+          },
+        ));
   }
 
-  void _add() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String temp = "卢洁辉 金丽丹";
-    testList.add(temp);
-    prefs.setStringList('testName', testList);
-    _show();
-  }
-
-  _show() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getStringList('testName') != null) {
-      setState(() {
-        testList = prefs.getStringList('testName');
-      });
-    }
-  }
-
-  _clear() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.clear(); // 全部清除
-    prefs.remove('testName');
-    setState(() {
-      testList = [];
-    });
+  Future<String> _getCartInfo(BuildContext context) async {
+    await Provider.of<CartProvide>(context).getCartInfo();
+    return 'end';
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/provide/cart.dart';
 import 'package:flutter_shop/provide/category_goods_list.dart';
 import 'package:flutter_shop/provide/child_category.dart';
 import 'package:flutter_shop/provide/counter.dart';
@@ -16,6 +17,7 @@ void main() {
   final categoryGoodsListProvide = CategoryGoodsListProvide();
   final detailsInfoProvide = DetailsInfoProvide();
   final currentIndexProvide = CurrentIndexProvide();
+  final cartProvide = CartProvide();
   
 
   runApp(MultiProvider(
@@ -35,6 +37,9 @@ void main() {
       ),
       ChangeNotifierProvider.value(
         value: currentIndexProvide,
+      ),
+      ChangeNotifierProvider.value(
+        value: cartProvide,
       ),
     ],
     child: MyApp(),
